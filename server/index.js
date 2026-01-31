@@ -50,15 +50,39 @@ const openai = new OpenAI({
 // --------------------
 // GitHub App key (LOCAL FILE or ENV VAR)
 // --------------------
-let privateKey;
+let privateKey = null;
 
-if (process.env.GITHUB_APP_PRIVATE_KEY_PATH) {
-  privateKey = fs.readFileSync(
-    process.env.GITHUB_APP_PRIVATE_KEY_PATH,
-    "utf8"
-  );
-} else {
-  privateKey = process.env.GITHUB_APP_PRIVATE_KEY ? process.env.GITHUB_APP_PRIVATE_KEY.replace(/\\n/g, "\n") : null;
+// Priority:
+// 1) `GITHUB_APP_PRIVATE_KEY_PATH` environment variable (explicit path)
+// 2) `GITHUB_APP_PRIVATE_KEY` environment variable (PEM text with \n escapes)
+// 3) default file one level above the server root: ../github-app.pem
+try {
+  if (process.env.GITHUB_APP_PRIVATE_KEY_PATH) {
+    const p = process.env.GITHUB_APP_PRIVATE_KEY_PATH;
+    if (fs.existsSync(p)) {
+      privateKey = fs.readFileSync(p, "utf8");
+      console.log(`Loaded GitHub App private key from path: ${p}`);
+    } else {
+      console.warn(`GITHUB_APP_PRIVATE_KEY_PATH set but file not found: ${p}`);
+    }
+  }
+
+  if (!privateKey && process.env.GITHUB_APP_PRIVATE_KEY) {
+    privateKey = process.env.GITHUB_APP_PRIVATE_KEY.replace(/\\n/g, "\n");
+    console.log("Loaded GitHub App private key from GITHUB_APP_PRIVATE_KEY env var");
+  }
+
+  // fallback: look one level up from the server directory for `github-app.pem` — convenient for local dev
+  if (!privateKey) {
+    const defaultPath = path.join(SERVER_ROOT, '..', 'github-app.pem');
+    if (fs.existsSync(defaultPath)) {
+      privateKey = fs.readFileSync(defaultPath, 'utf8');
+      console.log(`Loaded GitHub App private key from default path: ${defaultPath}`);
+    }
+  }
+} catch (err) {
+  console.error('Error while loading GitHub App private key:', err && err.message ? err.message : err);
+  privateKey = null;
 }
 
 // Private key validation deferred until write-backend selection so local mode can operate without GitHub keys.

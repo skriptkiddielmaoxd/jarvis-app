@@ -29,6 +29,7 @@ dist/win-unpacked/**
 # Server artifacts
 server/artifacts/
 server/.env
+server/github-app.pem
 
 # Editor / OS
 .vscode/

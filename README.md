@@ -7,9 +7,17 @@ Quick start
 - Copy the example env and fill secrets locally (do NOT commit `.env`):
 
 ```powershell
-cd desktop\jarvis-desktop\server
+cd server
 Copy-Item .env.example .env
 # edit .env with your API keys locally
+
+# If you use a GitHub App private key, a convenient local location is one level
+# above this repository (so it's not inside the project). Example:
+# - Place your key at: ../github-app.pem
+# - Or update `server/.env` with `GITHUB_APP_PRIVATE_KEY_PATH=../github-app.pem`
+
+# Example PowerShell to move a private key from Desktop to one level up:
+# Move-Item "$env:USERPROFILE\Desktop\github-app.pem" ..\github-app.pem
 ```
 
 - Run the server:
