@@ -1,0 +1,42 @@
+# Root .gitignore — keep large build artifacts and deps out of commits
+
+# Node modules
+node_modules/
+**/node_modules/
+
+# Vite / build outputs
+dist/
+ui/dist/
+desktop/ui/dist/
+server/dist/
+**/dist/
+
+# Electron / packaged installers and large binaries
+desktop/dist/
+dist/win-unpacked/
+dist/win-unpacked/**
+*.exe
+*.msi
+*.AppImage
+*.deb
+*.dmg
+*.zip
+*.7z
+*.tar.gz
+*.tgz
+*.iso
+
+# Server artifacts
+server/artifacts/
+server/.env
+
+# Editor / OS
+.vscode/
+.DS_Store
+npm-debug.log
+yarn-error.log
+.idea/
+
+# Logs
+logs/
+*.log

@@ -1,0 +1,30 @@
+# Node modules & common build artifacts
+node_modules/
+**/node_modules/
+
+.git
+# Vite / build output
+# ignore build outputs and nested dist folders
+
+# Editor / OS
+.vscode/
+.DS_Store
+npm-debug.log
+yarn-error.log
+
+# Electron / build artifacts
+desktop/dist/
+desktop/dist/**
+
+# packaged installers and large binaries
+*.exe
+*.msi
+*.AppImage
+*.deb
+*.dmg
+*.zip
+*.7z
+*.tar.gz
+*.tgz
+*.iso
+.idea/

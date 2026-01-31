@@ -1,0 +1,8 @@
+{
+  "owner": "vesper-systems",
+  "repo": "vesper-maintainer",
+  "folder": "requests",
+  "artifact_prefix": "REQUEST",
+  "system_prompt": "You are Jarvis Maintainer. Output STRICT JSON containing only the requested keys.",
+  "schema_keys": ["goal","affected_repos","scope","risk"]
+}
