@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react'
 import { marked } from 'marked'
 import Toast from './Toast'
 
-export default function OutputPanel({ response }) {
+export default function OutputPanel({ response, outputs = [], onSelect }) {
   const [showRaw, setShowRaw] = useState(false)
 
   const rendered = useMemo(() => {
@@ -14,6 +14,7 @@ export default function OutputPanel({ response }) {
   const [copiedMd, setCopiedMd] = useState(false)
   const [toast, setToast] = useState(null)
   const [tab, setTab] = useState('render')
+  const [selectedIdx, setSelectedIdx] = useState(0)
 
   async function safeCopy(text) {
     if (!text) return false
@@ -56,6 +57,13 @@ export default function OutputPanel({ response }) {
     setTimeout(() => setToast(null), 1500)
   }
 
+  function handleSelect(idx) {
+    const r = outputs[idx]
+    if (!r) return
+    onSelect && onSelect(r)
+    setSelectedIdx(idx)
+  }
+
   return (
     <div className="mt-2 text-sm">
       {toast && <Toast>{toast}</Toast>}
@@ -82,6 +90,16 @@ export default function OutputPanel({ response }) {
       </div>
 
       <div className="border-t pt-3">
+        {outputs && outputs.length > 0 && (
+          <div className="mb-3 flex gap-2 items-center">
+            <div className="text-sm text-gray-600">History:</div>
+            <div className="flex gap-1">
+              {outputs.map((o, i) => (
+                <button key={i} onClick={() => handleSelect(i)} className={`px-2 py-1 rounded text-sm ${i===selectedIdx?'bg-indigo-600 text-white':'bg-gray-100 text-gray-700'}`}>{i===0?'Latest':`#${i+1}`}</button>
+              ))}
+            </div>
+          </div>
+        )}
         <div className="flex items-center gap-2 mb-2">
           <button onClick={() => setTab('render')} aria-pressed={tab==='render'} className={`px-3 py-1 rounded focus:outline-none focus:ring-2 ${tab==='render' ? 'bg-indigo-600 text-white focus:ring-indigo-300' : 'bg-gray-100 text-gray-700 focus:ring-indigo-200'}`}>Rendered</button>
           <button onClick={() => setTab('raw')} aria-pressed={tab==='raw'} className={`px-3 py-1 rounded focus:outline-none focus:ring-2 ${tab==='raw' ? 'bg-indigo-600 text-white focus:ring-indigo-300' : 'bg-gray-100 text-gray-700 focus:ring-indigo-200'}`}>Raw</button>

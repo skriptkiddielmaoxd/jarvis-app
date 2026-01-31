@@ -1,0 +1,12 @@
+{
+  "name": "example",
+  "description": "Example project config for Jarvis UI testing.",
+  "help": "Use this project to try intents. Examples: 'summarize my notes', 'create a PR description from commits'.",
+  "templates": [
+    {
+      "id": "default",
+      "title": "Default template",
+      "prompt": "Write a short summary of the input."
+    }
+  ]
+}

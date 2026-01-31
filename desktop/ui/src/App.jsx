@@ -11,6 +11,7 @@ export default function App(){
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [response, setResponse] = useState(null)
+  const [outputs, setOutputs] = useState([])
   const [lastRequest, setLastRequest] = useState(null)
   const [showHelp, setShowHelp] = useState(false)
   const helpBtnRef = useRef(null)
@@ -34,6 +35,10 @@ export default function App(){
     try {
       const res = await API.post('/intent', body)
       setResponse(res.data)
+      setOutputs((s) => {
+        const next = [res.data, ...s]
+        return next.slice(0, 5)
+      })
     } catch (err) {
       const msg = err?.message || 'Request failed'
       setError(err)
@@ -49,6 +54,10 @@ export default function App(){
     try {
       const res = await API.post('/intent', lastRequest)
       setResponse(res.data)
+      setOutputs((s) => {
+        const next = [res.data, ...s]
+        return next.slice(0, 5)
+      })
     } catch (err) {
       setError(err)
     } finally {
@@ -114,7 +123,11 @@ export default function App(){
               <div className="text-sm text-gray-500">Latest artifact</div>
             </div>
             <div>
-              {response ? <OutputPanel response={response} /> : <div className="text-sm text-gray-500">No artifact to show yet.</div>}
+              {response ? (
+                <OutputPanel response={response} outputs={outputs} onSelect={(r) => setResponse(r)} />
+              ) : (
+                <div className="text-sm text-gray-500">No artifact to show yet.</div>
+              )}
             </div>
           </section>
         </main>
