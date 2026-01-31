@@ -58,15 +58,10 @@ if (process.env.GITHUB_APP_PRIVATE_KEY_PATH) {
     "utf8"
   );
 } else {
-  privateKey = process.env.GITHUB_APP_PRIVATE_KEY.replace(/\\n/g, "\n");
+  privateKey = process.env.GITHUB_APP_PRIVATE_KEY ? process.env.GITHUB_APP_PRIVATE_KEY.replace(/\\n/g, "\n") : null;
 }
 
-// Validate private key early to provide a clearer error message when misconfigured
-if (!privateKey || typeof privateKey !== 'string' || !/-----BEGIN [A-Z ]+PRIVATE KEY-----/.test(privateKey)) {
-  console.error('Invalid or missing GitHub App private key.');
-  console.error('Set `GITHUB_APP_PRIVATE_KEY_PATH` to a PEM file path, or set `GITHUB_APP_PRIVATE_KEY` with the full PEM (use \\n+ to represent newlines in env). Example header: "-----BEGIN PRIVATE KEY-----"');
-  process.exit(1);
-}
+// Private key validation deferred until write-backend selection so local mode can operate without GitHub keys.
 
 // --------------------
 // GitHub App Octokit (may be unused in local mode)
